@@ -3,7 +3,6 @@ import React, { useCallback, useRef, useLayoutEffect } from "react";
 const ChatComposer = ({ input, setInput, onSend, isSending }) => {
   const textareaRef = useRef(null);
 
-  // Auto-grow textarea height up to max-height
   useLayoutEffect(() => {
     const el = textareaRef.current;
     if (!el) return;

@@ -35,11 +35,8 @@ export default function Login() {
         }
       )
       .then((res) => {
-
-        // ✅ User ko Redux store me daalo
         dispatch(setUser(res.data.user));
 
-        // ✅ Redirect to Home
         navigate("/");
       })
       .catch((err) => {

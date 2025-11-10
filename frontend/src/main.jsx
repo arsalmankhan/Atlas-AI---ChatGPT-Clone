@@ -5,12 +5,9 @@ import axios from "axios";
 import store from "./store/store.js";
 import { setUser } from "./store/authSlice.js";
 import App from "./App.jsx";
-import "./index.css"; // Tailwind styles
+import "./index.css"; 
 
-/**
- * Initialize system theme (dark/light) based on OS preference
- * and update automatically when the preference changes.
- */
+
 function initSystemTheme() {
   try {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -19,10 +16,9 @@ function initSystemTheme() {
       document.documentElement.classList.toggle("dark", isDark);
     };
 
-    // initial preference
+  
     applyTheme(mediaQuery.matches);
 
-    // future changes
     const listener = (e) => applyTheme(e.matches);
     if (typeof mediaQuery.addEventListener === "function") {
       mediaQuery.addEventListener("change", listener);
@@ -36,10 +32,6 @@ function initSystemTheme() {
 
 initSystemTheme();
 
-/**
- * ✅ Auto Login / Auth Check
- * When app starts → check if user is authenticated from cookie
- */
 async function initAuth() {
   try {
     const res = await axios.get("http://localhost:3000/api/auth/me", {

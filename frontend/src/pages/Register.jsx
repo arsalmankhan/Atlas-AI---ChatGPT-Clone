@@ -39,11 +39,8 @@ export default function Register() {
         { withCredentials: true }
       )
       .then((res) => {
-
-        // ✅ User ko Redux store me daalo
         dispatch(setUser(res.data.user));
 
-        // ✅ Redirect
         navigate("/");
       })
       .catch((err) => console.error(err))
