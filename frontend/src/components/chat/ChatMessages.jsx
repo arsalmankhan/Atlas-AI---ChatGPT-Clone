@@ -19,10 +19,12 @@ const ChatMessages = ({ messages, isSending }) => {
             m.type === "user" ? "self-end" : "self-start"
           }`}
         >
+          {/* Role Label */}
           <div className="text-[0.65rem] uppercase tracking-wide text-gray-500 mb-1 font-semibold">
             {m.type === "user" ? "You" : "AI"}
           </div>
 
+          {/* Bubble */}
           <div
             className={`msg-bubble rounded-[14px] px-4 py-3 text-sm leading-relaxed border whitespace-pre-wrap break-words ${
               m.type === "user"
@@ -35,7 +37,9 @@ const ChatMessages = ({ messages, isSending }) => {
             {m.content}
           </div>
 
+          {/* Actions */}
           <div className="flex items-center gap-1.5 mt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
+            {/* Copy Button */}
             <button
               type="button"
               aria-label="Copy message"
@@ -53,8 +57,10 @@ const ChatMessages = ({ messages, isSending }) => {
               </svg>
             </button>
 
+            {/* AI-only actions */}
             {m.type === "ai" && (
               <>
+                {/* Like */}
                 <button
                   type="button"
                   aria-label="Like response"
@@ -70,6 +76,8 @@ const ChatMessages = ({ messages, isSending }) => {
                     <path d="M15 21H9a2 2 0 0 1-2-2v-9l5-7 1 1a2 2 0 0 1 .5 1.3V9h5a2 2 0 0 1 2 2l-2 8a2 2 0 0 1-2 2Z" />
                   </svg>
                 </button>
+
+                {/* Dislike */}
                 <button
                   type="button"
                   aria-label="Dislike response"
@@ -86,6 +94,7 @@ const ChatMessages = ({ messages, isSending }) => {
                   </svg>
                 </button>
 
+                {/* Speak */}
                 <button
                   type="button"
                   aria-label="Speak message"
@@ -113,6 +122,7 @@ const ChatMessages = ({ messages, isSending }) => {
                   </svg>
                 </button>
 
+                {/* Regenerate */}
                 <button
                   type="button"
                   aria-label="Regenerate"
@@ -137,6 +147,7 @@ const ChatMessages = ({ messages, isSending }) => {
         </div>
       ))}
 
+      {/* Typing Indicator */}
       {isSending && (
         <div className="self-start flex flex-col animate-fadeIn">
           <div className="text-[0.65rem] uppercase tracking-wide text-gray-500 mb-1 font-semibold">

@@ -33,6 +33,7 @@ const ChatSidebar = ({
 
   return (
     <>
+      {/* Backdrop for mobile view */}
       {open && (
         <button
           className="fixed inset-0 bg-black/40 cursor-pointer z-30 md:hidden"
@@ -40,12 +41,15 @@ const ChatSidebar = ({
           aria-label="Close sidebar"
         />
       )}
+
+      {/* Sidebar */}
       <aside
         className={`fixed md:static top-0 bottom-0 left-0 z-40 flex flex-col w-[250px] bg-[#0d0d0d]/95 backdrop-blur-md border-r border-[#1e1e1e] transform transition-transform duration-200 ${
           open ? "translate-x-0" : "-translate-x-[270px]"
         } md:translate-x-0 md:pt-0 pt-[52px]`}
         aria-label="Previous chats"
       >
+        {/* Header */}
         <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-[#1e1e1e]">
           <h2 className="text-base font-medium text-white">Chats</h2>
 
@@ -57,6 +61,7 @@ const ChatSidebar = ({
               New
             </button>
 
+            {/* ✅ Logout button */}
             <button
               className="px-3 py-1.5 text-[0.75rem] font-semibold uppercase tracking-wide rounded-md border border-[#252525] bg-[#111] text-white hover:bg-red-600 transition-colors"
               onClick={handleLogout}
@@ -66,6 +71,7 @@ const ChatSidebar = ({
           </div>
         </div>
 
+        {/* Chat List */}
         <nav
           className="flex flex-col gap-1 p-3 overflow-y-auto scrollbar-hide"
           aria-live="polite"
