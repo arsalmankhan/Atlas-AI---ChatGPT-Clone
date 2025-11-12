@@ -1,104 +1,79 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/authSlice";
 
 export default function Login() {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-  const [submitting, setSubmitting] = useState(false);
-
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
+    setLoading(true);
 
-    axios
-      .post(
+    try {
+      const res = await axios.post(
         "http://localhost:3000/api/auth/login",
-        {
-          email: form.email,
-          password: form.password,
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      .then((res) => {
+        { email, password },
+        { withCredentials: true }
+      );
 
-        // ✅ User ko Redux store me daalo
-        dispatch(setUser(res.data.user));
-
-        // ✅ Redirect to Home
-        navigate("/");
-      })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+      dispatch(setUser(res.data.user));
+      navigate("/");
+    } catch (err) {
+      alert("Invalid credentials");
+    }
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center app-root p-4">
-      <div className="card w-full max-w-md p-6 sm:p-8 shadow">
-        <h1 className="text-2xl font-semibold mb-1">Welcome back</h1>
-        <p className="text-sm text-muted mb-6">Sign in to your account</p>
+    <div className="min-h-screen flex items-center justify-center bg-[#000] text-white px-3">
+      <div className="w-full max-w-md bg-[#111] rounded-2xl border border-[#222] p-8 shadow-xl">
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm mb-1">
-              Email
-            </label>
+        <h2 className="text-3xl font-semibold text-center mb-6">
+          Sign in to your AI assistant
+        </h2>
+
+        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-gray-400">Email</label>
             <input
-              id="email"
-              name="email"
               type="email"
-              required
               placeholder="you@example.com"
-              onChange={handleChange}
-              className="input w-full"
+              className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm mb-1">
-              Password
-            </label>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-gray-400">Password</label>
             <input
-              id="password"
-              name="password"
               type="password"
-              required
               placeholder="••••••••"
-              onChange={handleChange}
-              className="input w-full"
+              className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
           <button
-            type="submit"
-            className="btn-primary w-full py-2 rounded"
-            disabled={submitting}
+            disabled={loading}
+            className="bg-white text-black hover:bg-neutral-200 transition-colors py-3 rounded-lg text-sm font-semibold"
           >
-            {submitting ? "Signing in..." : "Sign In"}
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-center">
-          Don't have an account?{" "}
-          <Link to="/register" className="text-primary">
+        <p className="text-center mt-4 text-gray-400 text-sm">
+          Don’t have an account?{" "}
+          <Link to="/register" className="text-blue-400 hover:underline">
             Register
           </Link>
         </p>

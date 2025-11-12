@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus, Menu } from "lucide-react"; // optional icons for better UI (you can remove if not using lucide-react)
+import { Plus, Menu } from "lucide-react";
 
 const ChatMobileBar = ({ onToggleSidebar, onNewChat }) => {
   return (
@@ -13,7 +13,6 @@ const ChatMobileBar = ({ onToggleSidebar, onNewChat }) => {
         z-30 md:hidden
       "
     >
-      {/* Sidebar Toggle */}
       <button
         onClick={onToggleSidebar}
         aria-label="Toggle chat history"
@@ -28,12 +27,10 @@ const ChatMobileBar = ({ onToggleSidebar, onNewChat }) => {
         <Menu className="w-5 h-5" />
       </button>
 
-      {/* Title */}
       <h1 className="text-center flex-1 text-[1.1rem] font-medium text-white select-none">
         ChatGPT Clone
       </h1>
 
-      {/* New Chat Button */}
       <button
         onClick={onNewChat}
         aria-label="New chat"

@@ -21,7 +21,6 @@ import AuthRequired from "../components/common/AuthRequired.jsx";
 const Home = () => {
   const dispatch = useDispatch();
 
-  // ✅ get auth
   const user = useSelector((state) => state.auth.user);
   const loading = useSelector((state) => state.auth.loading);
 
@@ -36,10 +35,6 @@ const Home = () => {
 
   const activeChat = chats.find((c) => c._id === activeChatId) || null;
 
-  // ===========================
-  // ✅ USER PROTECTION
-  // ===========================
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen text-gray-300">
@@ -51,10 +46,6 @@ const Home = () => {
   if (!user) {
     return <AuthRequired />;
   }
-
-  // ===========================
-  // ✅ CHAT LOGIC
-  // ===========================
 
   const handleNewChat = async () => {
     let title = window.prompt("Enter a title for the new chat:", "");
@@ -124,19 +115,12 @@ const Home = () => {
     );
   };
 
-  // ===========================
-  // ✅ MAIN UI
-  // ===========================
-
   return (
     <div className="flex flex-col md:flex-row h-[100dvh] bg-black text-gray-100 relative">
-      {/* Mobile Top Bar */}
       <ChatMobileBar
         onToggleSidebar={() => setSidebarOpen((o) => !o)}
         onNewChat={handleNewChat}
       />
-
-      {/* Sidebar */}
       <ChatSidebar
         chats={chats}
         activeChatId={activeChatId}
@@ -149,12 +133,10 @@ const Home = () => {
         open={sidebarOpen}
       />
 
-      {/* Main Chat Area */}
       <main
         className="flex flex-col flex-1 relative pt-[52px] md:pt-0 overflow-hidden"
         role="main"
       >
-        {/* Welcome Screen */}
         {messages.length === 0 && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center px-4">
             <div className="bg-neutral-900 border border-neutral-800 text-gray-400 text-xs px-4 py-1 rounded-full">

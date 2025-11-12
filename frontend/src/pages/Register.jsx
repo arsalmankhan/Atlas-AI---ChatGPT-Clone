@@ -5,130 +5,96 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../store/authSlice";
 
 export default function Register() {
-  const [form, setForm] = useState({
-    email: "",
-    firstname: "",
-    lastname: "",
-    password: "",
-  });
-  const [submitting, setSubmitting] = useState(false);
-
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
+    setLoading(true);
 
-    axios
-      .post(
+    try {
+      const res = await axios.post(
         "http://localhost:3000/api/auth/register",
         {
-          email: form.email,
-          fullName: {
-            firstName: form.firstname,
-            lastName: form.lastname,
-          },
-          password: form.password,
+          fullName: { firstName, lastName },
+          email,
+          password,
         },
         { withCredentials: true }
-      )
-      .then((res) => {
+      );
 
-        // ✅ User ko Redux store me daalo
-        dispatch(setUser(res.data.user));
-
-        // ✅ Redirect
-        navigate("/");
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setSubmitting(false));
+      dispatch(setUser(res.data.user));
+      navigate("/");
+    } catch (err) {
+      alert("Something went wrong.");
+    }
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center app-root p-4">
-      <div className="card w-full max-w-md p-6 sm:p-8 shadow">
-        <h1 className="text-2xl font-semibold mb-1">Create account</h1>
-        <p className="text-sm text-muted mb-6">Start your free account</p>
+    <div className="min-h-screen flex items-center justify-center bg-[#000] text-white px-3">
+      <div className="w-full max-w-md bg-[#111] rounded-2xl border border-[#222] p-8 shadow-xl">
 
-        <form onSubmit={handleSubmit} className="grid gap-4">
-          <div>
-            <label htmlFor="email" className="block text-sm mb-1">
-              Email
-            </label>
+        <h2 className="text-3xl font-semibold text-center mb-6">
+          Create Account
+        </h2>
+
+        <form onSubmit={handleRegister} className="flex flex-col gap-4">
+
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-gray-400">Email</label>
             <input
-              id="email"
-              name="email"
               type="email"
-              required
               placeholder="you@example.com"
-              className="input w-full"
-              value={form.email}
-              onChange={handleChange}
+              className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          <div>
-            <label htmlFor="firstname" className="block text-sm mb-1">
-              First name
-            </label>
+          <div className="flex gap-2">
             <input
-              id="firstname"
-              name="firstname"
               type="text"
-              required
-              placeholder="John"
-              className="input w-full"
-              value={form.firstname}
-              onChange={handleChange}
+              placeholder="First name"
+              className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none w-1/2"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
             />
-          </div>
 
-          <div>
-            <label htmlFor="lastname" className="block text-sm mb-1">
-              Last name
-            </label>
             <input
-              id="lastname"
-              name="lastname"
               type="text"
-              required
-              placeholder="Doe"
-              className="input w-full"
-              value={form.lastname}
-              onChange={handleChange}
+              placeholder="Last name"
+              className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none w-1/2"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm mb-1">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              placeholder="Create a password"
-              className="input w-full"
-              value={form.password}
-              onChange={handleChange}
-            />
-          </div>
+          <input
+            type="password"
+            placeholder="Password"
+            className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-          <button type="submit" className="btn-primary w-full py-2 rounded">
-            {submitting ? "Creating account..." : "Create Account"}
+          <button
+            disabled={loading}
+            className="bg-white text-black hover:bg-neutral-200 transition-colors py-3 rounded-lg text-sm font-semibold"
+          >
+            {loading ? "Creating..." : "Create Account"}
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-center">
+        <p className="text-center mt-4 text-gray-400 text-sm">
           Already have an account?{" "}
-          <Link to="/login" className="text-primary">
+          <Link to="/login" className="text-blue-400 hover:underline">
             Login
           </Link>
         </p>
