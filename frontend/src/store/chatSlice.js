@@ -1,6 +1,6 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit';
 
-// helpers
+
 const createEmptyChat = (title) => ({ id: nanoid(), title: title || 'New Chat', messages: [] });
 
 const chatSlice = createSlice({

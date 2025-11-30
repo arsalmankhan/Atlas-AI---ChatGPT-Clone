@@ -1,10 +1,12 @@
+import React from "react";
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/authSlice";
 
-export default function Register() {
+const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -38,21 +40,19 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#000] text-white px-3">
-      <div className="w-full max-w-md bg-[#111] rounded-2xl border border-[#222] p-8 shadow-xl">
-
+    <div className="min-h-screen flex items-center justify-center app-root px-3">
+      <div className="w-full max-w-md card p-8 shadow-xl">
         <h2 className="text-3xl font-semibold text-center mb-6">
           Create Account
         </h2>
 
         <form onSubmit={handleRegister} className="flex flex-col gap-4">
-
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-400">Email</label>
+            <label className="text-sm text-muted">Email</label>
             <input
               type="email"
               placeholder="you@example.com"
-              className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none"
+              className="input px-4 py-3 outline-none"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -62,7 +62,7 @@ export default function Register() {
             <input
               type="text"
               placeholder="First name"
-              className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none w-1/2"
+              className="input px-4 py-3 outline-none w-1/2"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
@@ -70,7 +70,7 @@ export default function Register() {
             <input
               type="text"
               placeholder="Last name"
-              className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none w-1/2"
+              className="input px-4 py-3 outline-none w-1/2"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
@@ -79,26 +79,28 @@ export default function Register() {
           <input
             type="password"
             placeholder="Password"
-            className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none"
+            className="input px-4 py-3 outline-none"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
 
           <button
             disabled={loading}
-            className="bg-white text-black hover:bg-neutral-200 transition-colors py-3 rounded-lg text-sm font-semibold"
+            className="btn-primary transition-colors py-3 rounded-lg text-sm font-semibold"
           >
             {loading ? "Creating..." : "Create Account"}
           </button>
         </form>
 
-        <p className="text-center mt-4 text-gray-400 text-sm">
+        <p className="text-center mt-4 text-muted text-sm">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-400 hover:underline">
+          <Link to="/login" className="text-primary hover:underline">
             Login
           </Link>
         </p>
       </div>
     </div>
   );
-}
+};
+
+export default Register;

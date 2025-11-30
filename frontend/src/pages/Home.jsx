@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+
 import ChatMobileBar from "../components/chat/ChatMobileBar.jsx";
 import ChatSidebar from "../components/chat/ChatSidebar.jsx";
 import ChatMessages from "../components/chat/ChatMessages.jsx";
 import ChatComposer from "../components/chat/ChatComposer.jsx";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import NewChatModal from "../components/chat/NewChatModal.jsx";
+import AuthRequired from "../components/common/AuthRequired.jsx";
 
 import {
   startNewChat,
@@ -15,8 +18,6 @@ import {
   sendingFinished,
   setChats,
 } from "../store/chatSlice.js";
-
-import AuthRequired from "../components/common/AuthRequired.jsx";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -32,12 +33,11 @@ const Home = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
-
-  const activeChat = chats.find((c) => c._id === activeChatId) || null;
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen text-gray-300">
+      <div className="flex items-center justify-center h-screen">
         Loading...
       </div>
     );
@@ -47,43 +47,19 @@ const Home = () => {
     return <AuthRequired />;
   }
 
-  const handleNewChat = async () => {
-    let title = window.prompt("Enter a title for the new chat:", "");
-    if (title) title = title.trim();
+  const createNewChat = async (title) => {
     if (!title) return;
 
-    const response = await axios.post(
+    const res = await axios.post(
       "http://localhost:3000/api/chat",
       { title },
       { withCredentials: true }
     );
 
-    getMessages(response.data.chat._id);
-    dispatch(startNewChat(response.data.chat));
+    dispatch(startNewChat(res.data.chat));
+    getMessages(res.data.chat._id);
     setSidebarOpen(false);
   };
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/chat", { withCredentials: true })
-      .then((response) => {
-        dispatch(setChats(response.data.chats.reverse()));
-      });
-
-    const tempSocket = io("http://localhost:3000", { withCredentials: true });
-
-    tempSocket.on("ai-response", (messagePayload) => {
-      setMessages((prev) => [
-        ...prev,
-        { type: "ai", content: messagePayload.content },
-      ]);
-      dispatch(sendingFinished());
-    });
-
-    setSocket(tempSocket);
-
-    return () => tempSocket.disconnect();
-  }, [dispatch]);
 
   const sendMessage = async () => {
     const trimmed = input.trim();
@@ -91,8 +67,7 @@ const Home = () => {
 
     dispatch(sendingStarted());
 
-    const newMessages = [...messages, { type: "user", content: trimmed }];
-    setMessages(newMessages);
+    setMessages((prev) => [...prev, { type: "user", content: trimmed }]);
     dispatch(setInput(""));
 
     socket.emit("ai-message", {
@@ -102,54 +77,70 @@ const Home = () => {
   };
 
   const getMessages = async (chatId) => {
-    const response = await axios.get(
+    const res = await axios.get(
       `http://localhost:3000/api/chat/messages/${chatId}`,
       { withCredentials: true }
     );
 
     setMessages(
-      response.data.messages.map((m) => ({
+      res.data.messages.map((m) => ({
         type: m.role === "user" ? "user" : "ai",
         content: m.content,
       }))
     );
   };
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/chat", { withCredentials: true })
+      .then((res) => dispatch(setChats(res.data.chats.reverse())));
+
+    const s = io("http://localhost:3000", { withCredentials: true });
+
+    s.on("ai-response", (payload) => {
+      setMessages((prev) => [
+        ...prev,
+        { type: "ai", content: payload.content },
+      ]);
+      dispatch(sendingFinished());
+    });
+
+    setSocket(s);
+    return () => s.disconnect();
+  }, [dispatch]);
+
   return (
-    <div className="flex flex-col md:flex-row h-[100dvh] bg-black text-gray-100 relative">
+    <div className="app-root flex h-[100dvh]">
       <ChatMobileBar
         onToggleSidebar={() => setSidebarOpen((o) => !o)}
-        onNewChat={handleNewChat}
+        onNewChat={() => setIsModalOpen(true)}
       />
+
       <ChatSidebar
         chats={chats}
         activeChatId={activeChatId}
+        open={sidebarOpen}
+        onNewChat={() => setIsModalOpen(true)}
         onSelectChat={(id) => {
           dispatch(selectChat(id));
-          setSidebarOpen(false);
+          dispatch(setInput(""));
           getMessages(id);
+          setSidebarOpen(false);
         }}
-        onNewChat={handleNewChat}
-        open={sidebarOpen}
       />
 
       <main
-        className="flex flex-col flex-1 relative pt-[52px] md:pt-0 overflow-hidden"
+        className="flex flex-col flex-1 pt-[52px] md:pt-0 overflow-hidden"
         role="main"
       >
-        {messages.length === 0 && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center px-4">
-            <div className="bg-neutral-900 border border-neutral-800 text-gray-400 text-xs px-4 py-1 rounded-full">
-              Early Preview
+        {!activeChatId && (
+          <div className="flex justify-center px-4 pt-6">
+            <div
+              className="w-full max-w-[720px] rounded-xl px-4 py-2 text-center text-sm
+              bg-[var(--card)] border border-[var(--input-border)] text-muted"
+            >
+              Please select or start a new chat to begin.
             </div>
-            <h1 className="text-4xl font-semibold bg-gradient-to-r from-gray-100 to-gray-600 bg-clip-text text-transparent">
-              ChatGPT Clone
-            </h1>
-            <p className="max-w-md text-sm text-gray-500 leading-relaxed">
-              Ask anything. Paste text, brainstorm ideas, or get quick
-              explanations. Your chats stay in the sidebar so you can pick up
-              where you left off.
-            </p>
           </div>
         )}
 
@@ -165,13 +156,11 @@ const Home = () => {
         )}
       </main>
 
-      {sidebarOpen && (
-        <button
-          className="fixed inset-0 bg-black/40 z-30 md:hidden"
-          aria-label="Close sidebar"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      <NewChatModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={createNewChat}
+      />
     </div>
   );
 };

@@ -1,10 +1,12 @@
+import React from "react";
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/authSlice";
 
-export default function Login() {
+const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -32,32 +34,30 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#000] text-white px-3">
-      <div className="w-full max-w-md bg-[#111] rounded-2xl border border-[#222] p-8 shadow-xl">
-
+    <div className="min-h-screen flex items-center justify-center app-root px-3">
+      <div className="w-full max-w-md card p-8 shadow-xl">
         <h2 className="text-3xl font-semibold text-center mb-6">
           Sign in to your AI assistant
         </h2>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
-
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-400">Email</label>
+            <label className="text-sm text-muted">Email</label>
             <input
               type="email"
               placeholder="you@example.com"
-              className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none"
+              className="input px-4 py-3 outline-none"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-400">Password</label>
+            <label className="text-sm text-muted">Password</label>
             <input
               type="password"
               placeholder="••••••••"
-              className="bg-[#0c0c0c] border border-[#1f1f1f] px-4 py-3 rounded-lg focus:border-gray-300 outline-none"
+              className="input px-4 py-3 outline-none"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -65,19 +65,21 @@ export default function Login() {
 
           <button
             disabled={loading}
-            className="bg-white text-black hover:bg-neutral-200 transition-colors py-3 rounded-lg text-sm font-semibold"
+            className="btn-primary transition-colors py-3 rounded-lg text-sm font-semibold"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
-        <p className="text-center mt-4 text-gray-400 text-sm">
+        <p className="text-center mt-4 text-muted text-sm">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-blue-400 hover:underline">
+          <Link to="/register" className="text-primary hover:underline">
             Register
           </Link>
         </p>
       </div>
     </div>
   );
-}
+};
+
+export default Login;
