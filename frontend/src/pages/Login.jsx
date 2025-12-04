@@ -20,7 +20,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/auth/login",
+        "https://atlas-ai-chatgpt-clone.onrender.com/api/auth/login",
         { email, password },
         { withCredentials: true }
       );

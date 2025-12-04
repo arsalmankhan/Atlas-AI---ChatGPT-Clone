@@ -51,7 +51,7 @@ const Home = () => {
     if (!title) return;
 
     const res = await axios.post(
-      "http://localhost:3000/api/chat",
+      "https://atlas-ai-chatgpt-clone.onrender.com/api/chat",
       { title },
       { withCredentials: true }
     );
@@ -78,7 +78,7 @@ const Home = () => {
 
   const getMessages = async (chatId) => {
     const res = await axios.get(
-      `http://localhost:3000/api/chat/messages/${chatId}`,
+      `https://atlas-ai-chatgpt-clone.onrender.com/api/chat/messages/${chatId}`,
       { withCredentials: true }
     );
 
@@ -92,10 +92,10 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/chat", { withCredentials: true })
+      .get("https://atlas-ai-chatgpt-clone.onrender.com/api/chat", { withCredentials: true })
       .then((res) => dispatch(setChats(res.data.chats.reverse())));
 
-    const s = io("http://localhost:3000", { withCredentials: true });
+    const s = io("https://atlas-ai-chatgpt-clone.onrender.com", { withCredentials: true });
 
     s.on("ai-response", (payload) => {
       setMessages((prev) => [

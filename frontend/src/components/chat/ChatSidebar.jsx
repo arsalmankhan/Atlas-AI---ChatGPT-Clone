@@ -19,7 +19,7 @@ const ChatSidebar = ({
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:3000/api/auth/logout",
+        "https://atlas-ai-chatgpt-clone.onrender.com/api/auth/logout",
         {},
         { withCredentials: true }
       );

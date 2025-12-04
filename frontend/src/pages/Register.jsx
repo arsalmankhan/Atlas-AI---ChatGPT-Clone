@@ -22,7 +22,7 @@ const Register = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/auth/register",
+        "https://atlas-ai-chatgpt-clone.onrender.com/api/auth/register",
         {
           fullName: { firstName, lastName },
           email,
